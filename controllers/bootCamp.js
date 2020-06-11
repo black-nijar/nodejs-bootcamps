@@ -1,6 +1,6 @@
 // Get Bootcamps
 exports.getBootCamps = (req, res, next) => {
-  res.send("Get Boot");
+  res.status(200).send("Get Boot");
 };
 
 // Get Bootcamp
