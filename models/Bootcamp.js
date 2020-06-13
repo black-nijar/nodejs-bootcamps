@@ -6,13 +6,13 @@ const BootcaampSchema = new mongoose.Schema({
     required: [true, "Please add a name"],
     unique: true,
     trim: true,
-    maxlength: [50, "Name can npt be more than 50 characters"]
+    maxlength: [50, "Name can not be more than 50 characters"]
   },
   slug: String,
   description: {
     type: String,
     required: [true, "Please add a description"],
-    maxlength: [500, "Description can be more than 500 characters"]
+    maxlength: [500, "Description can not be more than 500 characters"]
   },
   website: {
     type: String,
@@ -28,7 +28,7 @@ const BootcaampSchema = new mongoose.Schema({
   email: {
     type: String,
     match: [
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
       "Please add a valid email"
     ]
   },
@@ -40,12 +40,10 @@ const BootcaampSchema = new mongoose.Schema({
     // GeoJSON Point
     type: {
       type: String,
-      enum: ["Point"],
-      required: true
+      enum: ["Point"]
     },
     coordinates: {
       type: [Number],
-      required: true,
       index: "2dsphere"
     },
     formattedAddress: String,
@@ -71,7 +69,7 @@ const BootcaampSchema = new mongoose.Schema({
   averageRating: {
     type: Number,
     min: [1, "Rating must be at least 1"],
-    max: [1, "Rating must can not be more than 10"]
+    max: [10, "Rating must can not be more than 10"]
   },
   averageCost: Number,
   photo: {
