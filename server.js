@@ -22,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 //Get routes
-app.use("/api/v1/bootcamp", require("./routes/bootCamp"));
+app.use("/api/v1/bootcamps", require("./routes/bootCamp"));
 
 app.listen(PORT, () =>
   console.log(
@@ -34,5 +34,5 @@ app.listen(PORT, () =>
 process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`);
   // Close server & exit process
-  ServiceWorkerRegistration.close(() => process.exit(1));
+ ServiceWorkerRegistration.close(() => process.exit(1));
 })

@@ -31,7 +31,8 @@ exports.getBootCamp = async (req, res, next) => {
 exports.createBootcamp = async (req, res, next) => {
   try {
     const bootcamp = await Bootcamp.create(req.body);
-    res.status(201).json({
+    console.log('BOOT :', bootcamp)
+    res.status(200).json({
       success: true,
       data: bootcamp
     });
@@ -42,17 +43,29 @@ exports.createBootcamp = async (req, res, next) => {
 
 // Update Bootcamp
 exports.updateBootCamp = async (req, res, next) => {
-  const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
-  if (!bootcamp) {
-    return res.status(400).json({ success: false })
+  try {
+    const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true
+    });
+    if (!bootcamp) {
+      return res.status(400).json({ success: false });
+    }
+    res.status(200).json({ success: true, data: bootcamp });
+  } catch (error) {
+    res.status(400).json({ success: false });
   }
-  res.status(200).json({ success: true, data: bootcamp });
 };
 
 // Delete Bootcamps
-exports.deleteBootCamp = (req, res, next) => {
-  res.send(`Delete bootcamp ${req.params.id}`);
+exports.deleteBootCamp = async (req, res, next) => {
+  try {
+    const bootcamp = await Bootcamp.findByIdAndRemove(req.params.id);
+    if (!bootcamp) {
+      return res.status(400).json({ success: false });
+    }
+    res.status(400).json({ success: true, data: 'bootcamp deleted' });
+  } catch (error) {
+    res.status(400).json({ success: false });
+  }
 };
