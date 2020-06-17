@@ -38,5 +38,5 @@ app.listen(PORT, () =>
 process.on('unhandledRejection', (err, promise) => {
   console.log(`Error: ${err.message}`);
   // Close server & exit process
- ServiceWorkerRegistration.close(() => process.exit(1));
+//  ServiceWorkerRegistration.close(() => process.exit(1));
 })
