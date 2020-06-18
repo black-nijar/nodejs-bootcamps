@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === 'development') {
 
 //Get routes
 app.use('/api/v1/bootcamps', require('./routes/bootCamp'));
+app.use('/api/v1/courses', require('./routes/course'));
 
 //Error Handler
 app.use(errHandler);

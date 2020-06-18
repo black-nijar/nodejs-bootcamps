@@ -22,7 +22,7 @@ exports.getBootCamps = asyncHandler(async (req, res, next) => {
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
   // Finding Resource
-  query = Bootcamp.find(JSON.parse(queryStr));
+  query = Bootcamp.find(JSON.parse(queryStr)).populate('courses');
 
   // Select Fields
   if (req.query.select) {
@@ -51,23 +51,26 @@ exports.getBootCamps = asyncHandler(async (req, res, next) => {
   const bootcamps = await query;
 
   // Pagination
-  const Pagination = { };
+  const Pagination = {};
   if (endIndex < total) {
     Pagination.next = {
       page: page + 1,
       limit
-    }
-  } 
+    };
+  }
   if (startIndex > 0) {
     Pagination.prev = {
       page: page - 1,
       limit
-    }
+    };
   }
 
-  res
-    .status(200)
-    .json({ success: true, count: bootcamps.length, pagination: Pagination, data: bootcamps });
+  res.status(200).json({
+    success: true,
+    count: bootcamps.length,
+    pagination: Pagination,
+    data: bootcamps
+  });
 });
 
 // Get Bootcamp
@@ -110,13 +113,16 @@ exports.updateBootCamp = asyncHandler(async (req, res, next) => {
 
 // Delete Bootcamps
 exports.deleteBootCamp = asyncHandler(async (req, res, next) => {
-  const bootcamp = await Bootcamp.findByIdAndRemove(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id);
+
   if (!bootcamp) {
     return next(
       new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
     );
   }
-  res.status(400).json({ success: true, data: 'bootcamp deleted' });
+  bootcamp.remove();
+
+  res.status(200).json({ success: true, data: 'bootcamp deleted' });
 });
 
 // Get  Bootcamps within a radius
