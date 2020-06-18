@@ -1,20 +1,46 @@
-const Bootcamp = require("../models/Bootcamp");
-const ErrorResponse = require("../utils/errorResponse");
-const asyncHandler = require("../middleware/asyncHandler");
-const geocoder = require("../utils/geocoder");
+const Bootcamp = require('../models/Bootcamp');
+const ErrorResponse = require('../utils/errorResponse');
+const asyncHandler = require('../middleware/asyncHandler');
+const geocoder = require('../utils/geocoder');
 
 // Get Bootcamps
 exports.getBootCamps = asyncHandler(async (req, res, next) => {
   let query;
+  // Copy req.query
+  const reqQuery = { ...req.query };
 
-  let queryStr = JSON.stringify(req.query);
-  
+  // Fields to exclude
+  const removeFields = ['select', 'sort'];
+
+  // Loop over removeFields and delete them from reqQuery
+  removeFields.forEach(param => delete reqQuery[param]);
+
+  // Create query string
+  let queryStr = JSON.stringify(reqQuery);
+
+  // Create operators ($gt, $gte, etc)
   queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
+  // Finding Resource
   query = Bootcamp.find(JSON.parse(queryStr));
 
+  // Select Fields
+  if (req.query.select) {
+    const fields = req.query.select.split(',');
+    query = query.select(fields);
+  }
+
+  // Sort
+  if (req.query.sort) {
+    const sortBy = req.query.sort.split(',').join(' ');
+    query = query.sort(sortBy);
+  } else {
+    query = query.sort('-createdAt');
+  }
+
+  // Executing query
   const bootcamps = await query;
-  
+
   res
     .status(200)
     .json({ success: true, count: bootcamps.length, data: bootcamps });
@@ -66,7 +92,7 @@ exports.deleteBootCamp = asyncHandler(async (req, res, next) => {
       new ErrorResponse(`Bootcamp not found with id of ${req.params.id}`, 404)
     );
   }
-  res.status(400).json({ success: true, data: "bootcamp deleted" });
+  res.status(400).json({ success: true, data: 'bootcamp deleted' });
 });
 
 // Get  Bootcamps within a radius
