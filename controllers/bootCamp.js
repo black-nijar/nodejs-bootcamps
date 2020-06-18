@@ -5,7 +5,16 @@ const geocoder = require("../utils/geocoder");
 
 // Get Bootcamps
 exports.getBootCamps = asyncHandler(async (req, res, next) => {
-  const bootcamps = await Bootcamp.find(req.query);
+  let query;
+
+  let queryStr = JSON.stringify(req.query);
+  
+  queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
+
+  query = Bootcamp.find(JSON.parse(queryStr));
+
+  const bootcamps = await query;
+  
   res
     .status(200)
     .json({ success: true, count: bootcamps.length, data: bootcamps });
@@ -25,7 +34,7 @@ exports.getBootCamp = asyncHandler(async (req, res, next) => {
     data: bootcamp
   });
 });
- 
+
 // Post Bootcamp
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
   const bootcamp = await Bootcamp.create(req.body);
