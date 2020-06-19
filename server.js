@@ -33,6 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //Get routes
 app.use('/api/v1/bootcamps', require('./routes/bootCamp'));
 app.use('/api/v1/courses', require('./routes/course'));
+app.use('/api/v1/auth', require('./routes/auth'));
 
 //Error Handler
 app.use(errHandler);
