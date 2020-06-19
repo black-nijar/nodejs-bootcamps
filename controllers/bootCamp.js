@@ -6,7 +6,7 @@ const path = require('path');
 
 // Get Bootcamps
 exports.getBootCamps = asyncHandler(async (req, res, next) => {
-  res.status(200).json(res.advancedResult);
+  res.status(200).json(res.advancedResults);
 });
 
 // Get Bootcamp
